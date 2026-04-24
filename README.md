@@ -21,6 +21,23 @@ into a matching Moby checkout.
 - Embedded BPF object generated from `bpf/netkit_portmap.c`.
 - Driver unit tests that live with the Moby libnetwork driver package.
 
+## Performance
+
+Container-to-container throughput, measured inside a virtio VM with `iperf3`.
+Each number is the average of three runs.
+
+| Datapath | Streams | Throughput | VM CPU | Softirq CPU | Retransmits |
+|:--|--:|--:|--:|--:|--:|
+| veth | 1 | 65.98 Gbit/s | 87.8% | 0.02% | 0 |
+| netkit | 1 | 75.21 Gbit/s | 82.3% | 0.02% | 0 |
+| veth | 4 | 117.10 Gbit/s | 98.4% | 0.00% | 2902 |
+| netkit | 4 | 146.56 Gbit/s | 98.3% | 0.02% | 0 |
+
+| Comparison | Gain |
+|:--|--:|
+| netkit vs veth, 1 stream | +14.0% |
+| netkit vs veth, 4 streams | +25.2% |
+
 ## Kernel Requirements
 
 The driver requires Linux netkit support and BPF netkit attachment support. In
